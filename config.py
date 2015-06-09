@@ -11,3 +11,6 @@ USERNAME = "admin"
 PASSWORD = "admin"
 
 SESSION_TIMEOUT = 180
+
+#SQLALCHEMY_DATABASE_URI = "sqlite:///%s" % DATABASE
+SQLALCHEMY_DATABASE_URI = "sqlite:///%s" % (os.path.join(basedir, 'analytics.db'))
