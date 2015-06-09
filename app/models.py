@@ -54,6 +54,7 @@ class Performance(db.Model):
         return "<{} - {} - {}>".format(self.hps, self.cps, self.throughput)
 
 class TestCase(db.Model):
+    __tablename__ = "testcase"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     releaseid = db.Column(db.Integer, db.ForeignKey(Release.id))
