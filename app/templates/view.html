@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% block title %}Executive Home{% endblock %}
+{% block content %}
+<div class="container">
+
+    <script type="text/javascript">
+      google.load("visualization", "1.1", {packages:["bar"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Release', 'Failed', 'Passed', 'Total'],
+          {% set i = 0 %}
+          {% for result in results %}
+          ['{{result.r}}', 
+          {{total[i].count - passed[i].count}},
+          {{passed[i].count}},
+          {{total[i].count}},
+          ],
+          {% set i = i+1 %}        
+          {% endfor %}
+          ]);
+
+
+        var options = {
+          chart: {
+            title: 'Current Trend - Last 3 Releases',
+            subtitle: 'Failed, Passed & Total',
+        },
+        width:  350,
+        height: 300,
+        colors: ['#d9534f','#5cb85c','#337ab7'],
+          bars: 'horizontal' // Required for Material Bar Charts.
+      };
+
+      var chart = new google.charts.Bar(document.getElementById('releaseChart'));
+
+      chart.draw(data, options);
+  }
+</script>
+
+</div>
+<div class="col-md-8">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title" title="Release, component &amp; health report">
+                <i class="fa fa-dashboard fa-lg"></i>
+                &nbsp;Executive Report
+            </h3>
+        </div>
+        <div class="panel-body table-responsive">
+            <table id="dataTable" class="table table-bordered table-hover">
+                <thead>
+                    <th>Release</th>
+                    <th>Component</th>
+                    <th>Regression Health</th>
+                    <th>RAG Status</th>
+                </thead>
+                <tbody>
+                    {% set i = 0 %} 
+                    {% for result in results %}
+                    <tr>
+                        <td>
+                            <a  href="/results/{{result.r}}">{{result.r}}</a>
+                        </td>
+                        <td>
+                            <a  href="/results/{{result.r}}/comp/{{result.c}}">{{result.c}}</a>
+                        </td>
+                        <td>
+                            <a class="nohover" classs="btn btn-danger" href="/results/{{result.r}}/comp/{{result.c}}/status/fail"><span class="label label-as-badge label-danger">Failed:
+                                {{total[i].count - passed[i].count}}</span>
+                            </a> 
+                            <a class="nohover" href="/results/{{result.r}}/comp/{{result.c}}/status/pass"><span class="label label-as-badge label-success">Passed:
+                                {{passed[i].count}}</span>
+                            </a>
+                            <a class="nohover" href="/results/{{result.r}}/comp/{{result.c}}"><span class="label label-as-badge label-primary"> Total: {{total[i].count}}</span>
+                            </a>
+                        </td>
+                        {% if (total[i].count) - ((total[i].count)*(95/100)) > (total[i].count - passed[i].count) %}
+                        <td title="Success rate is greater than 95%. Release ready to be delivered" bgcolor="#5cb85c"></td>
+                        {% elif (total[i].count) - ((total[i].count)*(90/100)) > (total[i].count - passed[i].count)%}
+                        <td title="Success rate is greater than 90%. Some features may require re-testing" bgcolor='#f0ad4e'></td>
+                        {% else %}
+                        <td title="Success rate is less than 90%. Release can't be considered for shipping" bgcolor='#d9534f'></td>
+                        {% endif %}
+                    </tr>
+                    {% set i = i+1 %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+    <div class="panel" id="releaseChart">Loading Chart...</div>
+</div>
+</div>
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="col-md-2">
+    <nav class="navbar">
+        <ul class="nav navbar navbar-right">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-bars"></i>
+                    Release
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="dropdown-header">Available</li>
+                    {% for result in results %}
+                    <li>
+                        <a href="/results/{{result.r}}">
+                            <i class="fa fa-bookmark"></i> {{result.r}}</a>
+                        </li>
+                        {% endfor %}
+                        <li class="divider"></li>
+                        <li class="dropdown-header">Upcoming</li>
+                        <li class="disabled">
+                            <a href="#">4.2.0</a>
+                            <a href="#">4.1.0</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+    </div>
+</div>
+<div class="container">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alert alert-success alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert">
+            &times;
+        </button>
+        {% for message in messages %}
+        {{ message }}
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+</div>
+{% endblock %}

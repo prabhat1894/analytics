@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% if not error %} 
+                <div class="alert alert-warning alert-dismissable">
+            {% else %}
+                <div class="alert alert-danger alert-dismissable">
+            {% endif %}
+            <button type="button" class="close" data-dismiss="alert">
+                &times;
+            </button>
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+            <a href={{url_for('show_user')}} >Return</a>
+        </div>
+        {% endif %}
+    {% endwith %}
+    <div>
+     <form action={{url_for('manage')}} class="form" method="GET">
+         <div class="form-group">
+             <label for="username">Username</label>
+             <input type="text" class="form-control" id="username" name="username" value={{ request.args.get('username')}}
+                          required placeholder="Username">
+         </div>
+         <div class="form-group">
+              <label  for="password">Password</label>
+              <input type="text" class="form-control" id="password" name="password" value={{ request.args.get('password')}}
+                          required placeholder="Password" >
+         </div>
+         <div class="form-group">
+             <label for="state">State</label>
+             <select class="form-control" name="state" value={{request.args.get('state')}}>
+                  <option>active</option>
+                  <option>inactive</option>
+              </select>
+         </div>
+              <button type="submit" class="btn btn-success" name="action" value="edit">Submit</button>
+              <a href={{url_for('show_user')}} class="btn btn-default">Return</a>
+         </div>
+      </form>
+      </div>
+{% endblock %}
+

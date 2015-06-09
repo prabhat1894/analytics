@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% if not error %} 
+                <div class="alert alert-info alert-dismissable">
+            {% else %}
+                <div class="alert alert-danger alert-dismissable">
+            {% endif %}
+            <button type="button" class="close" data-dismiss="alert">
+                &times;
+            </button>
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+    {% if not error %}
+    <form action={{url_for('manage')}} class="form-inline" method="GET">
+        <div class="form-group">
+            <label class="sr-only" for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="username" value="" 
+                        required placeholder="Username">
+            <label class="sr-only" for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password" value=""
+                        required placeholder="Password" >
+            <label class="sr-only" for="state">State</label>
+            <select class="form-control" name="state" value="active">
+                <option>active</option>
+                <option>inactive</option>
+            </select>
+            <button type="submit" class="btn btn-primary" name="action" value="new">New User</button>
+        </div>
+    </form>
+    <hr/>
+    <div class="scroll-able">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+            <h3 class="panel-title">Users</h3>
+      </div>
+        <div class="panel-body">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <th>Username</th>
+                <th>Password</th>
+                <th>State</th>
+                <th colspan=2>Manage</th>
+            </thead>
+            <tbody>
+            {% for user in users %}
+            <tr>
+                <td><a href={{url_for('show_user')}}{{user.username}}>{{user.username}}</a></td>
+                <td>{{user.password}}</td>
+                <td>{{user.state}}</td>
+                <td><a class="btn btn-success btn-sm" href={{url_for('edit')}}?action=edit&username={{user.username}}&password={{user.password}}&state={{user.state}}> Edit </a></td>
+                <td><a class="btn btn-success btn-sm" href={{url_for('manage')}}?action=delete&username={{user.username}}&state={{user.state}}>Delete</a></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/css/jquery.dataTables.min.css" rel="stylesheet">
+  <link href="/static/css/dataTables.bootstrap.css" rel="stylesheet">
+  <link href="/static/css/font-awesome.min.css" rel="stylesheet">
+  <link href="/static/css/custom.css" rel="stylesheet">
+  <script src="/static/js/jquery-1.11.2.min.js"></script>
+  <script src="/static/js/bootstrap.min.js" ></script>
+  <script src="/static/js/dataTable.bootstrap.js" ></script>
+  <script src="/static/js/jquery.dataTables.min.js" ></script>
+  <script src="/static/js/google-chart.js"></script>
+  <style type="text/css">
+    #push,
+    #footer {
+        height: 50px;
+    }
+    #footer {
+        background-color: #f5f5f5;
+    }
+    .container2 {
+        width: auto;
+        max-width: 680px;
+    }
+    .container2 .credit {
+        padding-top: 10px;
+        padding-left: 10px;
+        margin: 10px 0;
+        float: right;
+    }
+    .scroll {
+        height: 350px !important;
+        overflow: scroll;
+    }
+</style>
+<script>
+ $(document).ready(function(){
+    $('#dataTable').dataTable();
+});
+</script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href={{ url_for('view') }}>
+                    <i class="fa fa-line-chart fa-lg"></i>
+                    Regression Analytics
+                </a>
+            </div>
+            <div>
+                <ul class="nav navbar-nav">
+                    {% if session['logged_in'] == True %}
+                    <li class="active">
+                        <a  href={{ url_for('home') }} >
+                            <span class="glyphicon glyphicon-home"></span>
+                            Home
+                        </a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-list-alt"></span>
+                            Reports
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li role="presentation" class="dropdown-header">Available Reports</li>
+                            <li>
+                                <a href={{url_for('view')}}>
+                                    <i class="fa fa-dashboard"></i>
+                                    Executive
+                                </a>
+                            </li>
+                            <li><a href={{url_for('reports')}}>
+                                <i class="fa fa-bar-chart"></i>
+                                Detailed
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li class="disabled">
+                            <a href="#">Custom 
+                                <span class="label label-primary label-as-badge">Coming Soon</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                {% endif %}
+                <li class="active pull-right">
+                    <a  href={{ url_for('about') }}>
+                        <span class="glyphicon glyphicon-info-sign"></span>
+                        About
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <ul class="nav navbar-nav pull-right">
+            {% if session['logged_in'] == True %}
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-user"></i>
+                    Welcome 
+                    <b>{{session.username}}</b>
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu"> 
+                    <li role="presentation">
+                        <a  data-toggle="modal" href="#modal-id"><span class="glyphicon glyphicon-wrench"></span> Settings
+                        </a>
+                    </li>
+                    <li>
+                        <a  href={{ url_for('logout') }}>
+                            <span class="glyphicon glyphicon-log-out"></span>
+                            Logout
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a data-toggle="modal" href="/help">
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                            Help
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+<div id="push"></div>
+</div>
+<div id="footer">
+  <div class="container2">
+      <p class="credit">
+          <span style="margin: 5px, 5px, 5px, 5px"></span>
+          &copy;2015 Regression Team | Maintained by 
+          <a href="mailto:ankur.srivasatva@cavisson.com">Ankur Srivastava</a>
+      </p>
+  </div>
+</div>
+
+<div class="modal fade" id="modal-id">
+    <div class="modal-dialog">
+        <form action="/account/update" method="POST">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Settings</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-3">
+                            <p class="text-right">Old Password</p>
+                        </div>
+                        <div class="col-xs-8 col-sm-8 col-md-8 col-lg-6">
+                            <input type="password" name="oldpasswd" id="oldpasswd" class="form-control" placeholder=" " required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            &nbsp;
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-3">
+                            <p class="text-right">New Password</p>
+                        </div>
+                        <div class="col-xs-8 col-sm-8 col-md-8 col-lg-6">
+                            <input type="password" name="newpasswd" id="newpasswd" class="form-control" placeholder="" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </form>
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+</body>
+</html>

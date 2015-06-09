@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}About Analytics{% endblock %}
+{% block content %}
+    <div class="jumbotron">
+        <h1>Regression&reg; Analytics</h1>
+        <p>A Dashboard for viewing regression results</p>
+        <p>Built on the very popular open source web development tool Flask(micro framework), Bootstrap&reg; and SQLite</p>
+        <p><a href={{ url_for('home') }} class="btn btn-info btn-lg"
+            role="button"><span class="glyphicon glyphicon-home"></span> Home</a></p>
+    </div>
+{% endblock %}

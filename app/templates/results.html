@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Analytics Results Home{% endblock %}
+{% block content %}
+<div class="panel panel-primary">
+  <div class="panel-heading">
+      <h3 class="panel-title">
+          <a href="{{url_for('reports')}}">
+              <i title="Back to detailed reports" class="fa fa-arrow-left "></i>
+          </a>
+          &nbsp;&nbsp;Regression results: Failed({{summary.failed}}), Passed({{summary.passed}}), Total({{summary.total}})
+      </h3>
+  </div>
+  <div class="panel-body table-responsive">
+    <table id="dataTable" class="table table-bordered table-hover">
+        <thead>
+            <th>Release</th>
+            <th>Version</th>
+            <th>Component</th>
+            <th>TestID</th>
+            <th>TestRun</th>
+            <th>Status</th>
+            <th>Description</th>
+        </thead>
+        <tbody>
+            {% for result in results %}
+            <tr>
+                <td>{{result.r}}</td>
+                <td>{{result.v}}</td>
+                <td>{{result.c}}</td>
+                <td>{{result.id}}</td>
+                <td>{{result.tr}}</td>
+                {% if result.status == "PASS" %}
+                <td bgcolor="#5cb85c">{{result.status}}</td>
+                {% else %}
+                <td bgcolor="#d9534f">{{result.status}}</td>
+                {% endif %}
+                <td title="{{result.desc}}">{{result.desc[:64]}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

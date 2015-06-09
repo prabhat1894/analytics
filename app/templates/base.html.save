@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <!--<title>Analytics Home</title>-->
+  <title> {% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="/static/css/dataTables.bootstrap.css" rel="stylesheet">
+    <!--<link href="/static/css/main.css" rel="stylesheet">-->
+    <script src="/static/js/jquery-1.11.2.min.js"></script>
+    <script src="/static/js/bootstrap.min.js" ></script>
+    <script src="/static/js/dataTable.bootstrap.js" ></script>
+    <script src="/static/js/jquery.dataTables.min.js" ></script>
+    <style type="text/css">
+        #push,
+        #footer {
+            height: 50px;
+        }
+        #footer {
+            background-color: #f5f5f5;
+        }
+        .container2 {
+            width: auto;
+            max-width: 680px;
+        }
+        .container2 .credit {
+            padding-top: 10px;
+            padding-left: 10px;
+            margin: 10px 0;
+            float: right;
+        }
+        .scroll {
+            height: 350px !important;
+            overflow: scroll;
+        }
+   </style>
+   <script>
+       $(document).ready(function(){
+            $('#dataTable').dataTable();
+        });
+  </script>
+  </head>
+  <body>
+    <nav class="navbar">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href={{ url_for('view') }}><span class="glyphicon glyphicon-eye-open"></span> Regression Analytics</a>
+            </div>
+            <div>
+                <ul class="nav navbar-nav">
+                    {% if session['logged_in'] == True %}
+                        {% if page == "home" %}
+                        <li class="active"><a  href={{ url_for('home') }} ><span class="glyphicon glyphicon-home"></span> Home</a></li>
+                        {% else %}
+                        <li><a  href={{ url_for('home') }} ><span class="glyphicon glyphicon-home"></span> Home</a></li>
+                        {% endif %}
+
+                        {% if page == "reports" %}
+                        <li class="active"><a title="Release, verison, component report"  href={{ url_for('reports') }}><span class="glyphicon glyphicon-list-alt"></span> Reports</a></li>
+                        {% else %}
+                        <li><a  title="Release, verison, component report" href={{ url_for('reports') }}><span class="glyphicon glyphicon-list-alt"></span> Reports</a></li>
+                        {% endif %}
+                    {% endif %}
+                    {% if page == "about" %}
+                    <li class="active pull-right"><a  href={{ url_for('about') }}><span class="glyphicon glyphicon-info-sign"></span> About</a></li>
+                    {% else %}
+                    <li><a  href={{ url_for('about') }}><span class="glyphicon glyphicon-info-sign"></span> About</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+                <ul class="nav navbar-nav pull-right">
+                    {% if session['logged_in'] == True %}
+                    <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome Admin<b class="caret"></b></a>
+                    <ul class="dropdown-menu"> 
+                        <li><a  href={{ url_for('logout') }}>Logout</a></li>
+                    <ul>
+                    </li>
+                    {% endif %}
+                </ul>
+        </div>
+    </nav>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+    <div id="push"></div>
+    </div>
+      <div id="footer">
+          <div class="container2">
+              <p class="credit"><span style="margin: 5px, 5px, 5px, 5px"></span>&copy;2015 Regression Team | Maintained by <a href="mailto:ankur.srivasatva@cavisson.com">Ankur Srivastava</a></p>
+            </div>
+      </div>
+  </body>
+</html>

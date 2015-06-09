@@ -1,0 +1,13 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+{% block title %}Page Not Found{% endblock %}
+{% block content %}
+<div class="container">
+  
+  <h1>Oops! This embarassing.</h1>
+  <p>Perhaps you've landed into the wrong page.</p>
+  <p>
+    <a href="{{ url_for('home') }}">Back</a>
+  </p>
+</div>
+{% endblock %}

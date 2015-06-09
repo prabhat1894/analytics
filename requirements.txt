@@ -1,0 +1,11 @@
+ flask-login
+ flask-openid
+ flask-mail
+ sqlalchemy
+ flask-sqlalchemy
+ sqlalchemy-migrate
+ flask-whooshalchemy==0.55a
+ flask-wtf
+ pytz
+ flask-babel
+ flup
