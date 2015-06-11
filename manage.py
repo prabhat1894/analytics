@@ -22,9 +22,9 @@ def syncdb():
 
 
     print "Adding components"
-    db.session.add(Component('NS'))
-    db.session.add(Component('ND'))
-    db.session.add(Component('NC'))
+    db.session.add(Component('NetStorm'))
+    db.session.add(Component('NetDiagnostics'))
+    db.session.add(Component('NetCloud'))
 
 
     print "Adding build version"
