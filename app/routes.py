@@ -21,6 +21,9 @@ import sqlite3
 from app import app
 from datetime import timedelta 
 import config 
+from app.models import Users, Release, Component, Build
+from app import db
+
 
 @app.route("/")
 @app.route("/index")
@@ -262,8 +265,8 @@ def controller():
     username = request.form['username']
     password = request.form['password']
 
-    #if not validate(username, password):
-    if not authenticate(username, password):
+    if not validate(username, password):
+    #if not authenticate(username, password):
         flash('Invalid username or password')
         return redirectTo('login')
 
@@ -288,3 +291,10 @@ def logout():
     
     return render_template('login.html', success=True)
 
+
+@app.route('/reports/dashboard')
+def show_dashboard():
+    releases = Release.query.all()
+    d = [dict(name=release.name, id=release.id) for release in releases]
+    import json
+    return json.dumps(d, indent=4)

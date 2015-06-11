@@ -11,15 +11,19 @@ from flask import (
 from functools import wraps
 import config
 import sqlite3
+from app.models import Users
+
 
 def getConnection():
     '''Returns a new sqlite connection to the database'''
     return sqlite3.connect(config.DATABASE)
 
+
 def validate(username, password):
     '''Validates username and password
     Returns False if user name or password doesn't match'''
-    if (username != config.USERNAME) or (password != config.PASSWORD):
+    user = Users.query.filter_by(username=username).filter_by(password=password).first()
+    if user is None:
         return False
 
     return True
