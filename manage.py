@@ -59,8 +59,9 @@ def syncdb():
     db.session.commit()
 
 @manager.command
-def run():
-    '''starts the server in development mode'''
+def debug():
+    '''starts the server in debug mode'''
     app.run(debug=True, host="0.0.0.0")
 
 manager.run()
+
