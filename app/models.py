@@ -85,13 +85,13 @@ class Users(db.Model):
     username = db.Column(db.String(16), unique=True)
     password = db.Column(db.String(16))
     role = db.Column(db.String, default="standard")
-    active = db.Column(db.String, default="inactive")
+    active = db.Column(db.String, default="false")
 
-    def __init__(self, username, password, role, state):
+    def __init__(self, username, password, role, active):
         self.username = username 
         self.password = password
         self.role = role
-        self.state = state 
+        self.active = active 
 
     def __repr__(self):
         return "<{} is a {} user and is currently {}>".format(self.username, self.role, self.active)
