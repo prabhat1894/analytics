@@ -22,7 +22,7 @@ def getConnection():
 def validate(username, password):
     '''Validates username and password
     Returns False if user name or password doesn't match'''
-    user = Users.query.filter_by(username=username).filter_by(password=password).first()
+    user = Users.query.filter_by(username=username).filter_by(password=password).filter_by(active='true').first()
     if user is None:
         return False
 
