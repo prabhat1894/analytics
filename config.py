@@ -9,7 +9,7 @@ DATABASE =  os.path.join(basedir,"regression.sqlite")
 USERNAME = "admin"
 PASSWORD = "admin"
 
-SESSION_TIMEOUT = 300
+SESSION_TIMEOUT = 600 # ten minutes
 
 #SQLALCHEMY_DATABASE_URI = "sqlite:///%s" % DATABASE
 SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, 'analytics.db')

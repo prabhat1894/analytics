@@ -36,6 +36,18 @@ class Build(db.Model):
     def __repr__(self):
         return "<{}-{}>".format(self.id, self.name)
 
+
+class Category(db.Model):
+    __tablename__ = 'category'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, unique=True)
+
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return "<{}-{}>".format(self.id, self.name)
+
 class Performance(db.Model):
     __tablename__ = 'performance'
     id = db.Column(db.Integer, primary_key=True)
@@ -65,10 +77,12 @@ class TestCase(db.Model):
     buildid = db.Column(db.Integer, db.ForeignKey(Build.id))
     componentid = db.Column(db.Integer, db.ForeignKey(Component.id))
     status = db.Column(db.String(4))
+    categoryid = db.Column(db.String, db.ForeignKey(Category.id))
     description = db.Column(db.String(128))
 
-    def __init__(self, name, releaseid, buildid, componentid, status, description):
-       self.name = name 
+    def __init__(self, name, categoryid, releaseid, buildid, componentid, status, description):
+       self.name = name
+       self.categoryid = categoryid
        self.releaseid = releaseid
        self.buildid = buildid
        self.componentid = componentid
@@ -76,7 +90,7 @@ class TestCase(db.Model):
        self.description = description
 
     def __repr__(self):
-        return "<{} - {}>".format(self.name, self.status)
+        return "<{}-{},{}>".format(self.categoryid, self.name, self.status)
 
 
 class Users(db.Model):

@@ -21,16 +21,23 @@ import sqlite3
 from app import app
 from datetime import timedelta 
 import config 
-from app.models import Users, Release, Component, Build
-from app import db
-
+from app.queries import (
+        get_results, 
+        get_results_by_build, 
+        get_performance_data, 
+        get_products, 
+        get_categories,
+        get_releases,
+        get_builds,
+        get_navbar_data,
+        get_graph_data,
+        get_tabular_failure_report)
 
 @app.route("/")
-@app.route("/index")
-@app.route("/home")
 @loginRequired
 def home():
-    return render_template('index.html', page="home")
+    #return render_template('index.html', page="home")
+    return show_dashboard()
 
 
 @app.errorhandler(404)
@@ -266,13 +273,12 @@ def controller():
     password = request.form['password']
 
     if not validate(username, password):
-    #if not authenticate(username, password):
         flash('Invalid username or password')
         return redirectTo('login')
 
     session['logged_in'] = True
     session['username'] = username 
-    return redirectTo('view')
+    return redirectTo('show_dashboard')
 
 @app.route('/account/update', methods=['GET','POST'])
 @loginRequired
@@ -280,7 +286,7 @@ def update():
     oldpasswd = request.form['oldpasswd']
     newpasswd = request.form['newpasswd']
     flash("Updating password for %s" %(session['username']))
-    return  redirectTo('view')
+    return  redirectTo('show_dashboard')
 
 @app.route('/account/logout')
 @loginRequired
@@ -292,9 +298,154 @@ def logout():
     return render_template('login.html', success=True)
 
 
+@app.route('/reports/v1/executive')
+def show_executive_report():
+    categories, json_data = get_navbar_data()
+    category_smoke_pass = get_results('smoke', 'pass').all()
+    category_smoke_total = get_results('smoke').all()
+    category_reg_pass = get_results('regression', 'pass').all()
+    category_reg_total = get_results('regression' ).all()
+    smoke = []
+    regression = []
+    fmt = "%-15s %-10s %-18s %10s %10s %10s"
+    header = fmt % ("Category", "Release", "Component","Total", "Passed", "Failed")
+    print "Smoke results"
+    print "-" * 79
+    print header 
+    for (x, y) in zip(category_smoke_pass, category_smoke_total):
+        category, release, component, passed = x
+        category, release, component, total = y
+        failed = total - passed
+        
+        print fmt % (category, release, component, total, passed, failed)
+        smoke.append(dict(category=category, 
+                          release=release, 
+                          component=component, 
+                          total=total, 
+                          passed=passed, 
+                          failed=failed))
+    
+    print "-" * 79
+    print "Regression results"
+    print "-" * 79
+    print header
+
+    for (x, y) in zip(category_reg_pass, category_reg_total):
+        category, release, component, passed = x
+        category, release, component, total = y
+        failed = total - passed 
+        
+        print fmt % (category, release, component, total, passed, failed)
+        regression.append(dict(category=category, 
+                               release=release, 
+                               component=component, 
+                               total=total, 
+                               passed=passed, 
+                               failed=failed))
+    
+    print "-" * 79
+    smoke_last_five_total = get_results_by_build(category="smoke", release="4.1.2").limit(5)
+    smoke_last_five_pass = get_results_by_build(category="smoke", release="4.1.2", status="pass").limit(5)
+
+    smoke_results = []
+    print "%10s %10s %10s %10s" % ("Build", "Total", "Passed" , "Failed")
+    for dataset_total, dataset_pass in zip(smoke_last_five_total, smoke_last_five_pass):
+        build_name, total = dataset_total
+        build_name, passed = dataset_pass
+
+        failed = total - passed
+        print "%10s %10s %10s %10s" % (build_name, total, passed, failed)
+
+    return render_template('executive.html', categories=categories,
+                            smoke=smoke, regression=regression,
+                            json_data=json_data) 
+
+
 @app.route('/reports/dashboard')
+@loginRequired
 def show_dashboard():
-    releases = Release.query.all()
-    d = [dict(name=release.name, id=release.id) for release in releases]
-    import json
-    return json.dumps(d, indent=4)
+    categories, json_data = get_navbar_data()
+    results = get_performance_data(release="4.1.2").limit(5)
+    cps = []
+    hps = []
+    throughput = []
+    build = []
+    for row in results:
+         build_name, perf = row
+         build.append(dict(name=build_name))
+         cps.append(dict(cps=perf.cps))
+         hps.append(dict(hps=perf.hps))
+         throughput.append(dict(throughput=perf.throughput))
+    smoke_last_five_total = get_results_by_build(category="smoke", release="4.1.2").limit(5)
+    smoke_last_five_pass = get_results_by_build(category="smoke", release="4.1.2", status="pass").limit(5)
+
+    smoke_results = []
+    for dataset_total, dataset_pass in zip(smoke_last_five_total, smoke_last_five_pass):
+        build_name, total = dataset_total
+        build_name, passed = dataset_pass
+        failed = total - passed
+        smoke_results.append(dict(name=build_name, total=total, passed=passed, failed=failed))
+
+    reg_last_five_total = get_results_by_build(category="regression", release="4.1.2").limit(5) 
+    reg_last_five_pass = get_results_by_build(category="regression", release="4.1.2", status="pass").limit(5)
+    reg_results = []
+    for dataset_total, dataset_pass in zip(reg_last_five_total, reg_last_five_pass):
+        build_name, total = dataset_total
+        build_name, passed = dataset_pass
+        failed = total - passed
+        reg_results.append(dict(name=build_name, total=total, passed=passed, failed=failed))
+
+    return render_template('dashboard.html',
+            build=build, cps=cps, hps=hps, 
+            throughput=throughput, categories=categories, 
+            json_data=json_data,
+            smoke_results=smoke_results,
+            reg_results=reg_results)
+
+
+@app.route('/reports/graphs/<product>')
+@app.route('/reports/graphs/<product>/<category>')
+@app.route('/reports/graphs/<product>/<category>/<release>')
+@app.route('/reports/graphs/<product>/<category>/<release>/<build>')
+@loginRequired
+def show_graphs(product=None, category=None, release=None, build=None):
+    label = ""
+    breadcrumb = "Filter> "
+    result = []
+    if product is not None and category is None and release is None and build is None:
+        # only product flag
+        total = get_graph_data(product=product)
+        passed = get_graph_data(product=product, status='pass')
+        label += "Overall {} tests report".format(product)
+        breadcrumb += "Product: {}".format(product)
+        result = get_tabular_failure_report(component=product)
+
+    elif product is not None and category is not None and release is None and build is None:
+        total = get_graph_data(product=product, category=category)
+        passed = get_graph_data(product=product, category=category, status='pass')
+        label += "{} {} tests report".format(product, category)
+        breadcrumb += "Product: {}, category: {}".format(product, category)
+        result = get_tabular_failure_report(component=product, category=category)
+        # product and category flag
+    elif product is not None and category is not None and release is not None and build is None:
+        # Product category and release flag
+        total = get_graph_data(product=product, category=category, release=release)
+        passed = get_graph_data(product=product, category=category, release=release, status='pass')
+        label += "{} {} tests report for {}".format(product, category, release)
+        breadcrumb += "Product: {}, category: {}, release: {}".format(product, category, release)
+        result = get_tabular_failure_report(component=product, category=category, release=release)
+    elif product is not None and category is not None and release is not None and build is not None:
+        # Product, category, release and build
+        total = get_graph_data(product=product, category=category, release=release, build=build)
+        passed = get_graph_data(product=product, category=category, release=release, build=build, status='pass')
+        label += "{} {} tests report for release: {} and build: {}".format(product, category, release, build)
+        breadcrumb += "Product: {}, Rategory: {}, Release: {}, Build: {}".format(product, category, release, build)
+        result = get_tabular_failure_report(component=product, category=category, release=release, build=build)
+    else:
+        return "Invalid path"
+
+    failed = total - passed 
+    categories, json_data = get_navbar_data()
+    print result
+    return render_template('single_graph.html', categories=categories, json_data=json_data, total=total, passed=passed, 
+            failed=failed, label=label, breadcrumb=breadcrumb, tabledata=result)

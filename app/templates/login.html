@@ -1,45 +1,39 @@
-{% extends 'base.html' %}
-{% block title %}Login to Analytics{% endblock %}
+{% extends 'template.html' %}
+{% block title %}Please login to access analytics{% endblock title %}
+{% block body_class %}class="bg-white"{% endblock body_class %}
+{% block navbar %}{% endblock %}	
 {% block content %}
-<div class="container" style="width:300px">
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    {% if not success %}
-    <div class="alert alert-danger alert-dismissable">
-        {% else %}
-        <div class="alert alert-success alert-dismissable">
-            {% endif %}
-            <button type="button" class="close" data-dismiss="alert">
-                &times;
-            </button>
-            {% for message in messages %}
-            {{ message }}
-            {% endfor %}
-        </div>
-        {% endif %}
-        {% endwith %}
-        
-        <div class="panel panel-primary">
-          <div class="panel-heading">
-              <h2 class="panel-title">Dashboard&reg; For Regression</h2>
-          </div>
-          <div class="panel-body table-responsive">
-
-            <form class="form-signin" action="/account/controller" method="POST">
-                <h4 class="form-signin-heading"> Please login</h4>
-                <label for="inputEmail" class="sr-only">Email address</label>
-                <input type="username" name="username" id="inputusername" class="form-control" placeholder="Username" required autofocus>
-                <br>
-                <label for="inputPassword" class="sr-only">Password</label>
-                <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" value="remember-me"> Remember me
-                    </label>
-                </div>
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-            </form>
-        </div>
-    </div>
+<div class="grid">
+	<div class="row cells12">
+		<div class="cell colspan3"></div>
+		<div class="cell colspan5">
+				<form action="/account/controller" method="post">
+					<div class="input-control modern text iconic big-input">
+						<input type="text" name="username">
+							<span class="label">Username</span>
+						    <span class="informer">Please enter you username</span>
+						    <span class="placeholder">Username</span>
+						    <span class="icon mif-user"></span>
+					</div>
+					<div class="input-control modern text iconic" data-role="input">
+						<input type="password" name="password">
+							<span class="label">Password</span>
+						    <span class="informer">Please enter your password</span>
+						   	 <span class="placeholder">Password</span>
+						    <span class="icon mif-lock"></span>
+					</div>
+					<br><br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<button class="button primary medium-button">
+						<span class="icon mif-enter"></span>&nbsp;Log in</button>
+					&nbsp;&nbsp;
+					<button type="button" class="button primary medium-button" onClick="this">
+						<span class="icon mif-cross"></span>&nbsp;&nbsp;Cancel</button>
+				</form>
+			</div>
+		</div>
+		<div class="cell colspan4"></div>
+	</div>
 </div>
-{% endblock %}
+
+{% endblock content %}
