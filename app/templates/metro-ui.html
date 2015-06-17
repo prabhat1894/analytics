@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Metro examples</title>
+    <link href="/static/css/metro.css" rel="stylesheet">
+    <script src="/static/js/jquery-1.11.2.min.js"></script>
+    <script src="/static/js/Chart.js"></script>
+    <script src="/static/js/metro.js"></script>
+</head>
+<body class="bg-grayLighter">
+        <div class="app-bar bg-darkTeal">
+        <a class="app-bar-element" href="#">Analytics</a>
+        <span class="app-bar-divider bg-darkTeal"></span>
+        <ul class="app-bar-menu bg-darkTeal">
+            <li><a href="">Home</a></li>
+            <li>
+                <a href="" class="dropdown-toggle">Reports</a>
+                <ul class="d-menu" data-role="dropdown">
+                    <li><a href="">Executive</a></li>
+                    <li><a href="">Detailed</a></li>
+                    <li class="divider"></li>
+                </ul>
+            </li>
+            <li>
+                <a href="" class="dropdown-toggle">Trends</a>
+                <ul class="d-menu" data-role="dropdown">
+                    <li><a href="{{url_for_metro}}">Latest Trends</a></li>
+                    <li class="divider"></li>
+                    <li><a href="">Performance</a></li>
+                    <li class="divider"></li>
+                    <li><a href="" class="dropdown-toggle">Smoke</a>
+                        <ul class="d-menu" data-role="dropdown">
+                            <li><a href="">NetStorm</a></li>
+                            <li><a href="">NetDiagnostics</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="" class="dropdown-toggle">Regression</a>
+                        <ul class="d-menu" data-role="dropdown">
+                            <li><a href="">NetStorm</a></li>
+                            <li><a href="">NetDiagnostics</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <span class="app-bar-divider bg-darkTeal"></span>
+            <li><a href="{{url_for('about')}}">About</a></li>
+            <li><a href="">Help</a></li>
+        </ul>
+    <div class="app-bar-element place-right">
+        <a class="dropdown-toggle fg-white"><span class="mif-enter"></span>Login</a>
+        <div class="app-bar-drop-container bg-white fg-dark place-right"
+                data-role="dropdown" data-no-close="true">
+            <div class="padding20">
+                <form method="post" action="/account/controller">
+                    <h4 class="text-light">Login to Analytics</h4>
+                    <div class="input-control text">
+                        <span class="mif-user prepend-icon"></span>
+                        <input type="text" name="username">
+                    </div>
+                    <div class="input-control text">
+                        <span class="mif-lock prepend-icon"></span>
+                        <input type="password" name="password">
+                    </div>
+                    <label class="input-control checkbox small-check">
+                        <input type="checkbox">
+                        <span class="check"></span>
+                        <span class="caption">Remember me</span>
+                    </label>
+                    <div class="form-actions">
+                        <input type="submit" class="button" value="Login">
+                        <a class="button" href="#">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+   <div class="grid">
+       <div class="row cells12">
+           <div class="cell colspan2 margin10">
+            <div class="treeview" data-role="treeview">
+                <ul>
+                    <li class="node">
+                        <span class="leaf">Products</span>
+                        <span class="node-toggle"></span>
+                        <ul>
+                        {% for product, releases in json_data.iteritems() %}
+                            <li class="node collapsed">
+                                <span class="leaf">{{product}}</span>
+                                <span class="node-toggle"></span>
+                                <ul>
+                                    {% for category in categories %}
+                                    <li class="node collapsed">
+                                    <span class="leaf">{{category}}</span>
+                                    <span class="node-toggle"></span>
+                                        <ul>
+                                        {% for release in releases %}
+                                            {% for r, v in release.iteritems() %}
+                                                    <li class="node collapsed">
+                                                        <span class="leaf">{{r}}</span>
+                                                        <span class="node-toggle"></span>
+                                                        <ul>
+                                                            {% for build in v %}
+                                                                <li>
+                                                                    <span class="leaf">{{build}}</span>
+                                                                </li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </li>
+                                            {% endfor %}
+                                        {% endfor %}
+                                        </ul>
+                                    {% endfor %}
+                                    </li>
+                                </ul>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+    </div>
+    <div class="cell colspan3">
+        <canvas id="cps"></canvas>
+        <h5 align="center">CPS</h5>
+    </div>
+    <div class="cell colspan3">
+        <canvas id="hps"></canvas>
+        <h5 align="center">HPS</h5>
+    </div>
+    <div class="cell colspan3">
+        <canvas id="throughput"></canvas>
+        <h5 align="center">Throughput</h5>
+    </div>
+</div>
+    <div class="row cells12">
+        <div class="cell colspan2">
+        </div>
+        <div class="cell colspan3">
+            <canvas id="smoke">
+            </canvas>
+        <h5 align="center">Smoke</h5>
+        </div>
+        <div class="cell colspan3">
+            <canvas id="regression">
+            </canvas>
+        <h5 align="center">Regression</h5>
+        </div>
+    </div>
+</div>
+{% include 'dashboard.js' %}
+</body>
+</html>

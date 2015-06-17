@@ -1,0 +1,43 @@
+<div class="treeview" data-role="treeview">
+  <ul>
+    <li class="node">
+      <span
+        class="leaf"><i class="fa"></i>Products</span><span class="node-toggle"></span> 
+      <ul>
+        {% for product,
+        releases in json_data.iteritems() %} 
+        <li class="node collapsed">
+			<i class="fa fa-file"></i>
+          <span
+              class="leaf"><a href="/reports/graphs/{{product}}">{{product}}</a></span> <span class="node-toggle"></span> 
+          <ul>
+            {% for category
+            in categories %} 
+            <li class="node collapsed">
+				<i class="fa fa-bookmark"></i>
+                <span class="leaf"></span><a href="/reports/graphs/{{product}}/{{category}}">{{category}}</a></span>
+              <span class="node-toggle"></span> 
+              <ul>
+                {% for release in releases %} {% for r, v in
+                release.iteritems() %} 
+                <li class="node collapsed"><i class="fa fa-tag"></i>
+                <span class="leaf"><a href="/reports/graphs/{{product}}/{{category}}/{{r}}">{{r}}</a></span> <span
+                    class="node-toggle"></span> 
+                  <ul>
+                    {% for build in v %} 
+                    <li><span
+                        class="leaf"><a href="/reports/graphs/{{product}}/{{category}}/{{r}}/{{build}}">{{build}}</a></span> </li>
+                    {% endfor %} 
+                  </ul>
+                </li>
+                {% endfor %} {% endfor %}
+              </ul>
+              {% endfor %} 
+            </li>
+          </ul>
+        </li>
+        {% endfor %} 
+      </ul>
+    </li>
+  </ul>
+</div>

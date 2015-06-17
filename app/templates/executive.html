@@ -1,0 +1,129 @@
+{% extends 'template.html' %}
+{% block title %}Executive Home{% endblock %}
+{% block content %}
+<script>
+    var options = { 
+        "pageLength": 3,
+        "aLengthMenu" : [3, 9, 18, 25],
+        "order": [[0, "desc"]]
+    }
+            
+    $(document).ready(function(){
+        $('#smokeTable').dataTable(options);
+    });
+
+    $(document).ready(function(){
+        $('#regressionTable').dataTable(options);
+    });
+</script>
+<div id="myCarousel" class="carousel slide" data-ride="carousel">
+  <!-- Indicators -->
+  <ol class="carousel-indicators">
+    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+    <li data-target="#myCarousel" data-slide-to="1"></li>
+    <li data-target="#myCarousel" data-slide-to="2"></li>
+    <li data-target="#myCarousel" data-slide-to="3"></li>
+  </ol>
+
+  <!-- Wrapper for slides -->
+  <div class="carousel-inner" role="listbox">
+    <div class="item active">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title" title="Release, component &amp; health report">
+                        &nbsp;Executive reports for smoke test cases 
+                    </h3>
+                </div>
+                <div class="panel-body table-responsive">
+                    <table id="smokeTable" class="table table-bordered table-hover">
+                        <thead>
+                            <th>Release</th>
+                            <th>Component</th>
+                            <th>Smoke Health</th>
+                        </thead>
+                        <tbody>
+                        {% for result in smoke %}
+                        <tr>
+                                <td>
+                                    <a  href="#">{{result.release}}</a>
+                                </td>
+                                <td>
+                                    <a  href="#">{{result.component}}</a>
+                                </td>
+                                <td>
+                                    <a class="nohover" classs="btn btn-danger" href="#"><span class="label label-as-badge label-danger">Failed:
+                                        {{result.failed}}</span>
+                                    </a> 
+                                    <a class="nohover" href="#"><span class="label label-as-badge label-success">Passed:
+                                        {{result.passed}}</span>
+                                    </a>
+                                    <a class="nohover" href="#"><span class="label label-as-badge label-primary"> Total: {{result.total}}</span>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="item">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title" title="Release, component &amp; health report">
+                &nbsp;Executive reports for regression test cases 
+            </h3>
+        </div>
+        <div class="panel-body table-responsive">
+            <table id="regressionTable" class="table table-bordered table-hover">
+                <thead>
+                    <th>Release</th>
+                    <th>Component</th>
+                    <th>Regression Health</th>
+                </thead>
+                <tbody>
+                    {% for result in regression %}
+                    <tr>
+                        <td>
+                            <a  href="#">{{result.release}}</a>
+                        </td>
+                        <td>
+                            <a  href="/results/{{result.release}}/comp/{{result.component}}">{{result.component}}</a>
+                        </td>
+                        <td>
+                            <a class="nohover" classs="btn btn-danger" href="#"><span class="label label-as-badge label-danger">Failed:
+                                    {{result.failed}}</span>
+                            </a> 
+                            <a class="nohover" href="#"><span class="label label-as-badge label-success">Passed:
+                                    {{result.passed}}</span>
+                            </a>
+                            <a class="nohover" href="#"><span class="label label-as-badge label-primary"> Total: {{result.total}}</span>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+    </div>
+
+  </div>
+
+  <!-- Left and right controls -->
+  <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+     <span class="glyphicon glyphicon-chevron-right" aria-hidden="false"></span>
+    <span class="sr-only">Next</span>
+  </a>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+<h5>{{breadcrumb}}</h5>
+<div class="grid">
+   <div class="row cells12">
+      <div class="cell colspan4">
+          <canvas class="margin40 no-margin-left" id="graph" style="width: 100%; height=100%;"></canvas>
+          <h5 align="left">{{label}}</h5>
+          Failed: {{failed}}, Passed: {{passed}}, Total: {{total}}
+      </div>
+      <div class="cell colspan7">
+          <!--<table id="dt" class="dataTable table border hovered"
+              data-role="datatable" data-searching="true">-->
+          <table id="dt" class="dataTable table border hovered" data-searching="true">
+              <thead>
+                  <tr>
+                      <th>Component</th>
+                      <th>Category</th>
+                      <th>Status</th>
+                      <th>Release</th>
+                      <th>Build</th>
+                      <th>Description</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for row in tabledata %}
+                  <tr>
+                      <td>{{row.product}}</td>
+                      <td>{{row.category}}</td>
+                      <td class="fg-red">{{row.status}}</td>
+                      <td>{{row.release}}</td>
+                      <td>{{row.build}}</td>
+                      <td>{{row.desc}}</td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+      </div>
+   </div>
+</div>

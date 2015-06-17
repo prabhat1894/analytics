@@ -1,0 +1,90 @@
+<script>
+    function showDialog(id){
+        $(id).data('dialog').open();
+    }
+</script>
+<div class="app-bar bg-darkCyan">
+    <a class="app-bar-element branding" href="{{url_for('show_dashboard')}}"><i class="fa fa-pie-chart fa-lg"></i>&nbsp;Analytics</a>
+   <span class="app-bar-divider bg-darkCyan"></span>
+   <ul class="app-bar-menu bg-darkCyan">
+       <li><a href="{{url_for('show_dashboard')}}">Home</a></li>
+	  {% if session['logged_in'] == True %}      
+	  <li>
+         <a href="" class="dropdown-toggle">Reports</a>
+         <ul class="d-menu" data-role="dropdown">
+           <li><a href="{{url_for('show_executive_report')}}">Executive</a></li>
+            <li><a href="">Detailed</a></li>
+            <li class="divider"></li>
+         </ul>
+      </li>
+      <li>
+         <a href="" class="dropdown-toggle">Trends</a>
+         <ul class="d-menu" data-role="dropdown">
+            <li><a href="{{url_for('show_dashboard')}}">Latest Trends</a></li>
+            <li class="divider"></li>
+            <li><a href="">Performance</a></li>
+            <li class="divider"></li>
+            <li>
+               <a href="" class="dropdown-toggle">Smoke</a>
+               <ul class="d-menu" data-role="dropdown">
+                  <li><a href="">NetStorm</a></li>
+                  <li><a href="">NetDiagnostics</a></li>
+               </ul>
+            </li>
+            <li>
+               <a href="" class="dropdown-toggle">Regression</a>
+               <ul class="d-menu" data-role="dropdown">
+                  <li><a href="">NetStorm</a></li>
+                  <li><a href="">NetDiagnostics</a></li>
+               </ul>
+            </li>
+         </ul>
+      </li>
+	  {% endif %}
+      <span class="app-bar-divider bg-darkCyan"></span>
+      <li><a href="{{url_for('about')}}">About</a></li>
+      <li><a href="">Help</a></li>
+   </ul>
+   {% if session['logged_in'] == True %}
+   <div class="app-bar-element place-right">
+	   <a href="" class="dropdown-toggle fg-white">Welcome, {{session.username}}! </a> 
+       <ul class="d-menu" data-role="dropdown">
+          <li><a href="javascript:showDialog('#dialog')">Settings</a></li>
+          
+          
+		  <li class="divider"></li>
+          <li><a href="{{url_for('logout')}}">Logout</a></li>
+       </ul>
+	   
+   </div>
+   {% endif %}
+</div>
+<div class="padding20" data-role="dialog" id="dialog" data-overlay="true" data-close-button="true" data-height="300" data-width="300" data-overlay-color="op-dark">
+    <form action='/account/update' method="post">
+    <div class="input-control modern text iconic" data-role="input">
+        <input type="password" name="oldpasswd">
+        <span class="label">Current Password</span>
+        <span class="informer">Please enter your current password</span>
+        <span class="placeholder">Current Password</span>
+        <span class="icon mif-lock"></span>
+    </div>
+    <div class="input-control modern text iconic" data-role="input">
+        <input type="password" name="newpasswd">
+        <span class="label">New Password</span>
+        <span class="informer">Please enter your new password</span>
+        <span class="placeholder">New Password</span>
+        <span class="icon mif-lock"></span>
+    </div>
+    <div class="input-control modern text iconic" data-role="input">
+        <input type="password" name="confirmpasswd">
+        <span class="label">Confirm Password</span>
+        <span class="informer">Please confirm password</span>
+        <span class="placeholder">Confirm Password</span>
+        <span class="icon mif-lock"></span>
+    </div>
+    <br>
+    &nbsp;&nbsp;&nbsp;
+    <button class="button primary medium-button margin10 no-margin-left no-margin-right no-margin-bottom padding10">
+    <span class="icon mif-enter"></span>&nbsp;Update</button>
+    </form>
+</div>
